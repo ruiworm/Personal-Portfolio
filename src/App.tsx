@@ -31,23 +31,23 @@ const ProjectCard = ({
   onExplore: (id: string) => void; 
 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 50 }}
+    initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-20%" }}
-    transition={{ duration: 1 }}
-    className={`relative flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 md:gap-24 group`}
+    viewport={{ once: true, margin: "-10%" }}
+    transition={{ duration: 0.8 }}
+    className={`relative flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-6 sm:gap-10 md:gap-14 group`}
   >
     {/* Fluid Image Container */}
-    <div className="relative w-full md:w-1/2 h-80 flex items-center justify-center">
+    <div className="relative w-full md:w-5/12 h-48 sm:h-56 md:h-60 flex items-center justify-center">
       {/* Background Glow */}
       <motion.div
-        className="absolute inset-0 bg-cyan-500/10 mix-blend-screen blur-3xl -z-10 rounded-full"
-        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+        className="absolute inset-0 bg-cyan-500/10 mix-blend-screen blur-2xl -z-10 rounded-full"
+        animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.5, 0.3] }}
         transition={{ duration: 4 + index, repeat: Infinity, ease: "easeInOut" }}
       />
       {/* Image with fluid border radius */}
       <motion.div
-        className="relative w-64 h-64 md:w-80 md:h-80 overflow-hidden"
+        className="relative w-44 h-44 sm:w-52 sm:h-52 md:w-56 md:h-56 overflow-hidden"
         style={{ borderRadius: "40% 60% 70% 30% / 40% 50% 60% 50%" }}
         animate={{
           borderRadius: [
@@ -61,7 +61,7 @@ const ProjectCard = ({
         <img 
           src={project.image} 
           alt={project.title}
-          className="w-full h-full object-cover opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000 mix-blend-luminosity group-hover:mix-blend-normal"
+          className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 mix-blend-luminosity group-hover:mix-blend-normal"
           referrerPolicy="no-referrer"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent pointer-events-none" />
@@ -69,16 +69,16 @@ const ProjectCard = ({
     </div>
     
     {/* Text Content - Floating */}
-    <div className={`relative w-full md:w-1/2 flex flex-col ${index % 2 === 0 ? 'items-start text-left' : 'items-end text-right'} z-10`}>
-      <h3 className="text-4xl md:text-5xl font-black tracking-tighter mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-500">
+    <div className={`relative w-full md:w-7/12 flex flex-col ${index % 2 === 0 ? 'items-start text-left' : 'items-end text-right'} z-10`}>
+      <h3 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tighter mb-2 md:mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400">
         {project.title}
       </h3>
-      <p className="text-zinc-400 text-lg font-light leading-relaxed mb-8 max-w-lg">
+      <p className="text-zinc-400 text-sm md:text-base font-light leading-relaxed mb-3 md:mb-4 max-w-lg line-clamp-2">
         {project.description}
       </p>
-      <div className={`flex flex-wrap gap-4 text-sm font-mono text-cyan-400/80 ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
+      <div className={`flex flex-wrap gap-2.5 text-xs font-mono text-cyan-400/80 ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
         {project.tags.map((tag, i) => (
-          <span key={tag} className="flex items-center gap-2">
+          <span key={tag} className="flex items-center gap-1.5">
             {i > 0 && <span className="w-1 h-1 rounded-full bg-emerald-500/50" />}
             {tag}
           </span>
@@ -88,18 +88,18 @@ const ProjectCard = ({
       {/* Abstract Link (Button acting as link) */}
       <motion.button 
         onClick={() => onExplore(project.id)}
-        className="mt-12 flex items-center gap-4 text-white group/link cursor-pointer focus:outline-none"
-        whileHover={{ x: index % 2 === 0 ? 10 : -10 }}
+        className="mt-4 md:mt-5 flex items-center gap-3 text-white group/link cursor-pointer focus:outline-none"
+        whileHover={{ x: index % 2 === 0 ? 8 : -8 }}
       >
         {index % 2 !== 0 && (
-          <div className="w-8 h-[1px] bg-white/30 group-hover/link:w-16 group-hover/link:bg-white transition-all duration-500 relative">
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+          <div className="w-6 h-[1px] bg-white/30 group-hover/link:w-12 group-hover/link:bg-white transition-all duration-500 relative">
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
           </div>
         )}
-        <span className="font-bold tracking-widest uppercase text-sm">Explore</span>
+        <span className="font-bold tracking-widest uppercase text-xs">Explore</span>
         {index % 2 === 0 && (
-          <div className="w-8 h-[1px] bg-white/30 group-hover/link:w-16 group-hover/link:bg-white transition-all duration-500 relative">
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+          <div className="w-6 h-[1px] bg-white/30 group-hover/link:w-12 group-hover/link:bg-white transition-all duration-500 relative">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
           </div>
         )}
       </motion.button>
@@ -264,15 +264,15 @@ export default function App() {
             <HeroSection />
 
       {/* Projects Section - Fluid Layout */}
-      <section id="projects" className="py-32 px-6 max-w-7xl mx-auto relative z-10">
+      <section id="projects" className="py-12 sm:py-16 px-6 max-w-6xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 1 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.8 }}
           className="flex flex-col items-center"
         >
-          <h2 className="text-4xl md:text-6xl font-black mb-32 tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-800">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 md:mb-10 tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-800">
             PROJECTS
           </h2>
           
@@ -283,14 +283,14 @@ export default function App() {
                 <button 
                   onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
                   disabled={currentPage === 0}
-                  className="absolute -left-4 md:-left-16 lg:-left-24 top-1/2 -translate-y-1/2 z-20 flex items-center gap-4 group disabled:opacity-0 disabled:pointer-events-none transition-opacity duration-700"
+                  className="absolute -left-4 md:-left-12 lg:-left-20 top-1/2 -translate-y-1/2 z-20 flex items-center gap-3 group disabled:opacity-0 disabled:pointer-events-none transition-opacity duration-500"
                 >
-                  <div className="relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16">
+                  <div className="relative flex items-center justify-center w-10 h-10 md:w-12 md:h-12">
                     <motion.div 
-                      className="absolute inset-0 bg-cyan-500/10 rounded-full blur-xl group-hover:bg-cyan-400/30 transition-colors duration-500"
+                      className="absolute inset-0 bg-cyan-500/10 rounded-full blur-lg group-hover:bg-cyan-400/30 transition-colors duration-500"
                     />
                     <motion.div
-                      className="absolute w-4 h-4 md:w-6 md:h-6 bg-gradient-to-br from-cyan-400 to-blue-600 opacity-40 group-hover:opacity-100 group-hover:scale-150 transition-all duration-500"
+                      className="absolute w-3.5 h-3.5 md:w-5 md:h-5 bg-gradient-to-br from-cyan-400 to-blue-600 opacity-40 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500"
                       animate={{
                         borderRadius: ["40% 60% 70% 30% / 40% 50% 60% 50%", "60% 40% 30% 70% / 60% 30% 70% 40%", "40% 60% 70% 30% / 40% 50% 60% 50%"],
                         rotate: [0, -90, -180]
@@ -299,7 +299,7 @@ export default function App() {
                     />
                     <div className="w-1 h-1 bg-white rounded-full shadow-[0_0_8px_2px_rgba(255,255,255,0.8)] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                  <span className="text-[10px] md:text-xs font-mono tracking-[0.3em] text-cyan-400/0 group-hover:text-cyan-400/80 transition-colors duration-500 -ml-2">
+                  <span className="text-[9px] md:text-[10px] font-mono tracking-[0.25em] text-cyan-400/0 group-hover:text-cyan-400/80 transition-colors duration-500 -ml-1">
                     PREV
                   </span>
                 </button>
@@ -307,14 +307,14 @@ export default function App() {
                 <button 
                   onClick={() => setCurrentPage(p => Math.min(totalPages - 1, p + 1))}
                   disabled={currentPage === totalPages - 1}
-                  className="absolute -right-4 md:-right-16 lg:-right-24 top-1/2 -translate-y-1/2 z-20 flex items-center gap-4 group disabled:opacity-0 disabled:pointer-events-none transition-opacity duration-700 flex-row-reverse"
+                  className="absolute -right-4 md:-right-12 lg:-right-20 top-1/2 -translate-y-1/2 z-20 flex items-center gap-3 group disabled:opacity-0 disabled:pointer-events-none transition-opacity duration-500 flex-row-reverse"
                 >
-                  <div className="relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16">
+                  <div className="relative flex items-center justify-center w-10 h-10 md:w-12 md:h-12">
                     <motion.div 
-                      className="absolute inset-0 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-400/30 transition-colors duration-500"
+                      className="absolute inset-0 bg-emerald-500/10 rounded-full blur-lg group-hover:bg-emerald-400/30 transition-colors duration-500"
                     />
                     <motion.div
-                      className="absolute w-4 h-4 md:w-6 md:h-6 bg-gradient-to-br from-emerald-400 to-teal-600 opacity-40 group-hover:opacity-100 group-hover:scale-150 transition-all duration-500"
+                      className="absolute w-3.5 h-3.5 md:w-5 md:h-5 bg-gradient-to-br from-emerald-400 to-teal-600 opacity-40 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500"
                       animate={{
                         borderRadius: ["40% 60% 70% 30% / 40% 50% 60% 50%", "60% 40% 30% 70% / 60% 30% 70% 40%", "40% 60% 70% 30% / 40% 50% 60% 50%"],
                         rotate: [0, 90, 180]
@@ -323,7 +323,7 @@ export default function App() {
                     />
                     <div className="w-1 h-1 bg-white rounded-full shadow-[0_0_8px_2px_rgba(255,255,255,0.8)] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                  <span className="text-[10px] md:text-xs font-mono tracking-[0.3em] text-emerald-400/0 group-hover:text-emerald-400/80 transition-colors duration-500 -mr-2">
+                  <span className="text-[9px] md:text-[10px] font-mono tracking-[0.25em] text-emerald-400/0 group-hover:text-emerald-400/80 transition-colors duration-500 -mr-1">
                     NEXT
                   </span>
                 </button>
@@ -334,36 +334,36 @@ export default function App() {
               <AnimatePresence mode="wait">
                 <motion.div 
                   key={`top-${currentPage}`}
-                  initial={{ opacity: 0, filter: "blur(10px)", x: 50 }}
+                  initial={{ opacity: 0, filter: "blur(10px)", x: 30 }}
                   animate={{ opacity: 1, filter: "blur(0px)", x: 0 }}
-                  exit={{ opacity: 0, filter: "blur(10px)", x: -50 }}
-                  transition={{ duration: 0.8, ease: "easeInOut" }}
+                  exit={{ opacity: 0, filter: "blur(10px)", x: -30 }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
                   className="w-full"
                 >
                   {currentProjects[0] && <ProjectCard project={currentProjects[0]} index={0} onExplore={(id) => navigate('#/projects/' + id)} />}
                 </motion.div>
               </AnimatePresence>
 
-              {/* Fluid Timeline Pagination (Between Projects) */}
+              {/* Fluid Timeline Pagination (Between Projects) - Compact Connector */}
               {totalPages > 1 && (
-                <div className="flex flex-col items-center justify-center w-full py-24 gap-6 z-30">
-                  <div className="text-zinc-600 font-mono text-[10px] tracking-[0.5em] uppercase">
-                    Phase <span className="text-cyan-400">0{currentPage + 1}</span> <span className="mx-2 opacity-50">/</span> 0{totalPages}
+                <div className="flex flex-col items-center justify-center w-full py-4 md:py-6 gap-2.5 z-30">
+                  <div className="text-zinc-500 font-mono text-[9px] tracking-[0.4em] uppercase">
+                    Phase <span className="text-cyan-400">0{currentPage + 1}</span> <span className="mx-1.5 opacity-50">/</span> 0{totalPages}
                   </div>
                   
-                  <div className="relative w-48 md:w-64 h-[1px] bg-zinc-800 flex items-center">
+                  <div className="relative w-36 md:w-48 h-[1px] bg-zinc-800 flex items-center">
                     {/* Active sliding indicator */}
                     <motion.div 
-                      className="absolute left-0 h-[2px] bg-gradient-to-r from-cyan-500 to-emerald-400 shadow-[0_0_15px_rgba(34,211,238,0.6)] rounded-full"
+                      className="absolute left-0 h-[2px] bg-gradient-to-r from-cyan-500 to-emerald-400 shadow-[0_0_10px_rgba(34,211,238,0.6)] rounded-full"
                       initial={false}
                       animate={{ 
                         width: `${100 / totalPages}%`,
                         x: `${currentPage * 100}%` 
                       }}
-                      transition={{ type: "spring", stiffness: 50, damping: 20 }}
+                      transition={{ type: "spring", stiffness: 60, damping: 20 }}
                     >
                       {/* Core bright spot */}
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/3 h-[1px] bg-white shadow-[0_0_10px_white]" />
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/3 h-[1px] bg-white shadow-[0_0_8px_white]" />
                     </motion.div>
 
                     {/* Clickable zones */}
@@ -371,11 +371,10 @@ export default function App() {
                       <button
                         key={i}
                         onClick={() => setCurrentPage(i)}
-                        className="flex-1 h-12 z-10 cursor-pointer group relative flex items-center justify-center"
+                        className="flex-1 h-8 z-10 cursor-pointer group relative flex items-center justify-center"
                         aria-label={`Go to page ${i + 1}`}
                       >
-                        {/* Subtle hover effect for the track segment */}
-                        <div className="w-1 h-1 rounded-full bg-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        <div className="w-1 h-1 rounded-full bg-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </button>
                     ))}
                   </div>
@@ -385,10 +384,10 @@ export default function App() {
               <AnimatePresence mode="wait">
                 <motion.div 
                   key={`bottom-${currentPage}`}
-                  initial={{ opacity: 0, filter: "blur(10px)", x: 50 }}
+                  initial={{ opacity: 0, filter: "blur(10px)", x: 30 }}
                   animate={{ opacity: 1, filter: "blur(0px)", x: 0 }}
-                  exit={{ opacity: 0, filter: "blur(10px)", x: -50 }}
-                  transition={{ duration: 0.8, ease: "easeInOut" }}
+                  exit={{ opacity: 0, filter: "blur(10px)", x: -30 }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
                   className="w-full"
                 >
                   {currentProjects[1] && <ProjectCard project={currentProjects[1]} index={1} onExplore={(id) => navigate('#/projects/' + id)} />}
@@ -396,10 +395,10 @@ export default function App() {
               </AnimatePresence>
 
               {/* Quick entrance to full project gallery */}
-              <div className="flex justify-center mt-16">
+              <div className="flex justify-center mt-8 md:mt-10">
                 <button
                   onClick={() => navigate('#/projects')}
-                  className="group flex items-center gap-3 px-6 py-2.5 rounded-full bg-zinc-900/60 border border-zinc-800 hover:border-cyan-500/40 text-xs font-mono text-zinc-300 hover:text-cyan-300 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-[0_0_20px_rgba(34,211,238,0.15)]"
+                  className="group flex items-center gap-2.5 px-5 py-2 rounded-full bg-zinc-900/60 border border-zinc-800 hover:border-cyan-500/40 text-xs font-mono text-zinc-300 hover:text-cyan-300 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-[0_0_15px_rgba(34,211,238,0.15)]"
                 >
                   <Layers className="w-3.5 h-3.5 text-cyan-400" />
                   <span>VIEW ALL PROJECTS ({projects.length})</span>
