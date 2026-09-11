@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, X, Calendar, Clock, Tag, ArrowRight, BookOpen, Terminal } from 'lucide-react';
 import { BLOG_POSTS, BlogPost } from '../data/blogs';
+import { useLanguage } from '../context/LanguageContext';
 
 interface BlogListPageProps {
   onSelectPost: (slug: string) => void;
@@ -10,6 +11,7 @@ interface BlogListPageProps {
 const CATEGORIES = ['ALL', 'AI & SYSTEMS', 'GRAPHICS & WEBGL', 'ENGINEERING'] as const;
 
 export const BlogListPage: React.FC<BlogListPageProps> = ({ onSelectPost }) => {
+  const { lang, t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -41,15 +43,15 @@ export const BlogListPage: React.FC<BlogListPageProps> = ({ onSelectPost }) => {
       >
         <div className="flex items-center gap-2 px-3 py-1 bg-zinc-900/60 border border-zinc-800 rounded-full text-[10px] font-mono tracking-widest text-cyan-400 mb-6">
           <Terminal className="w-3 h-3" />
-          <span>ARCHIVE // SYS.INDEX_LOGS</span>
+          <span>{t('blogList.tag')}</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-black tracking-tighter mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-200 to-zinc-600">
-          WRITINGS & THOUGHTS
+          {t('blogList.title')}
         </h1>
 
         <p className="text-zinc-400 text-base sm:text-lg max-w-xl font-light leading-relaxed">
-          深入系统架构核心、探索现代图形交互与 Web 前沿工程思考。
+          {t('blogList.subtitle')}
         </p>
       </motion.div>
 
@@ -81,7 +83,7 @@ export const BlogListPage: React.FC<BlogListPageProps> = ({ onSelectPost }) => {
                     transition={{ type: 'spring', stiffness: 350, damping: 25 }}
                   />
                 )}
-                {cat}
+                {cat === 'ALL' ? t('blogList.catAll') : cat}
               </button>
             );
           })}
@@ -94,7 +96,7 @@ export const BlogListPage: React.FC<BlogListPageProps> = ({ onSelectPost }) => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="搜索文章或标签..."
+            placeholder={t('blogList.searchPlaceholder')}
             className="w-full pl-10 pr-9 py-2 bg-zinc-950/80 border border-zinc-800 text-xs font-mono text-zinc-200 placeholder-zinc-500 rounded-full focus:outline-none focus:border-cyan-500/60 focus:shadow-[0_0_15px_rgba(34,211,238,0.15)] transition-all"
           />
           {searchQuery && (
@@ -170,7 +172,7 @@ export const BlogListPage: React.FC<BlogListPageProps> = ({ onSelectPost }) => {
                     </div>
 
                     <div className="flex items-center gap-2 text-xs font-mono tracking-wider text-cyan-400 group-hover:text-cyan-300">
-                      <span>READ ARTICLE</span>
+                      <span>{t('blogList.readArticle')}</span>
                       <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform duration-300" />
                     </div>
                   </div>
@@ -183,7 +185,7 @@ export const BlogListPage: React.FC<BlogListPageProps> = ({ onSelectPost }) => {
               animate={{ opacity: 1 }}
               className="py-24 text-center border border-dashed border-zinc-900 rounded-2xl bg-zinc-950/20"
             >
-              <p className="font-mono text-sm text-zinc-500 mb-4">未找到匹配的文章关键词或分类</p>
+              <p className="font-mono text-sm text-zinc-500 mb-4">{t('blogList.noResults')}</p>
               <button
                 onClick={() => {
                   setSelectedCategory('ALL');
@@ -191,7 +193,7 @@ export const BlogListPage: React.FC<BlogListPageProps> = ({ onSelectPost }) => {
                 }}
                 className="px-4 py-1.5 text-xs font-mono text-cyan-400 border border-cyan-500/30 rounded-full hover:bg-cyan-500/10 transition-colors cursor-pointer"
               >
-                RESET FILTERS
+                {t('projectsPage.resetFilter')}
               </button>
             </motion.div>
           )}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BookOpen, Compass, Layers, ChevronLeft } from 'lucide-react';
+import { BookOpen, Compass, Layers, ChevronLeft, Languages } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface NavbarProps {
   currentPath: string;
@@ -9,6 +10,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { lang, toggleLang, t } = useLanguage();
   const isHome = currentPath === '/' || currentPath === '';
   const isProjects = currentPath.startsWith('/projects');
   const isBlog = currentPath.startsWith('/blog');
@@ -16,21 +18,21 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
   const navItems = [
     {
       id: 'overview',
-      label: '01 // OVERVIEW',
+      label: t('nav.overview'),
       icon: <Compass className="w-3.5 h-3.5" />,
       hash: '#/',
       active: isHome,
     },
     {
       id: 'projects',
-      label: '02 // PROJECTS',
+      label: t('nav.projects'),
       icon: <Layers className="w-3.5 h-3.5" />,
       hash: '#/projects',
       active: isProjects,
     },
     {
       id: 'writings',
-      label: '03 // WRITINGS',
+      label: t('nav.writings'),
       icon: <BookOpen className="w-3.5 h-3.5" />,
       hash: '#/blog',
       active: isBlog,
@@ -50,7 +52,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="flex items-center gap-2 px-2 py-1 text-zinc-300 hover:text-white transition-colors cursor-pointer group focus:outline-none"
-          title={isCollapsed ? '展开菜单' : '收起菜单'}
+          title={isCollapsed ? t('nav.expand') : t('nav.collapse')}
           aria-label={isCollapsed ? 'Expand navigation' : 'Collapse navigation'}
         >
           <div className="relative flex items-center justify-center w-2 h-2">
@@ -78,18 +80,18 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
               animate={{ opacity: 1, width: 'auto' }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="flex items-center gap-3 md:gap-4 overflow-hidden whitespace-nowrap"
+              className="flex items-center gap-2.5 md:gap-3 overflow-hidden whitespace-nowrap"
             >
               {/* Divider */}
               <div className="w-[1px] h-4 bg-zinc-800 shrink-0 ml-1 md:ml-2" />
 
               {/* Navigation Items */}
-              <div className="flex items-center gap-1 shrink-0 pr-1">
+              <div className="flex items-center gap-1 shrink-0">
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => onNavigate(item.hash)}
-                    className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-mono tracking-wider transition-all duration-300 cursor-pointer focus:outline-none ${
+                    className={`relative flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-mono tracking-wider transition-all duration-300 cursor-pointer focus:outline-none ${
                       item.active
                         ? 'text-cyan-300 font-semibold shadow-[0_0_15px_rgba(34,211,238,0.15)]'
                         : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
@@ -107,6 +109,22 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
                   </button>
                 ))}
               </div>
+
+              {/* Divider */}
+              <div className="w-[1px] h-4 bg-zinc-800 shrink-0" />
+
+              {/* Language Switcher Pill */}
+              <button
+                onClick={toggleLang}
+                className="relative flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono tracking-wider transition-all duration-300 bg-zinc-900/80 hover:bg-zinc-800/90 border border-zinc-800 hover:border-cyan-500/40 text-zinc-300 hover:text-cyan-300 cursor-pointer focus:outline-none shrink-0"
+                title={lang === 'zh' ? 'Switch to English' : '切换为中文'}
+                aria-label="Toggle language"
+              >
+                <Languages className="w-3 h-3 text-cyan-400" />
+                <span className={lang === 'zh' ? 'text-cyan-300 font-bold' : 'text-zinc-500'}>中</span>
+                <span className="text-[8px] text-zinc-600">/</span>
+                <span className={lang === 'en' ? 'text-cyan-300 font-bold' : 'text-zinc-500'}>EN</span>
+              </button>
             </motion.div>
           )}
         </AnimatePresence>

@@ -1,21 +1,23 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, X, Layers, ArrowUpRight, Cpu, Activity } from 'lucide-react';
-import { projects, Project } from '../data/projects';
+import { projects, Project, getProjectLocalized } from '../data/projects';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ProjectsPageProps {
   onSelectProject: (id: string) => void;
 }
 
-const CATEGORIES = [
-  'ALL',
-  'AI / ML',
-  'SYSTEMS & CLOUD',
-  'GRAPHICS & WEBGL',
-  'FULLSTACK & APP'
+const CATEGORY_KEYS = [
+  { id: 'ALL', labelKey: 'projectsPage.catAll' },
+  { id: 'AI / ML', labelKey: 'projectsPage.catAI' },
+  { id: 'SYSTEMS & CLOUD', labelKey: 'projectsPage.catSystems' },
+  { id: 'GRAPHICS & WEBGL', labelKey: 'projectsPage.catGraphics' },
+  { id: 'FULLSTACK & APP', labelKey: 'projectsPage.catFullstack' }
 ] as const;
 
 export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) => {
+  const { lang, t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -24,14 +26,17 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
       const matchesCategory =
         selectedCategory === 'ALL' || project.category === selectedCategory;
       const query = searchQuery.trim().toLowerCase();
+      const loc = getProjectLocalized(project, lang);
       const matchesSearch =
         !query ||
         project.title.toLowerCase().includes(query) ||
         project.description.toLowerCase().includes(query) ||
+        loc.title.toLowerCase().includes(query) ||
+        loc.description.toLowerCase().includes(query) ||
         project.tags.some((t) => t.toLowerCase().includes(query));
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, searchQuery, lang]);
 
   return (
     <div className="min-h-screen pt-32 pb-28 px-6 max-w-7xl mx-auto relative z-10 selection:bg-cyan-500/30">
@@ -47,15 +52,15 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
       >
         <div className="flex items-center gap-2 px-3.5 py-1 bg-zinc-900/70 border border-zinc-800 rounded-full text-[10px] font-mono tracking-widest text-cyan-400 mb-6">
           <Layers className="w-3 h-3" />
-          <span>PORTFOLIO // FULL_ARCHIVE</span>
+          <span>{t('projectsPage.tag')}</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-black tracking-tighter mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-200 to-zinc-600">
-          ALL PROJECTS
+          {t('projectsPage.title')}
         </h1>
 
         <p className="text-zinc-400 text-base sm:text-lg max-w-2xl font-light leading-relaxed">
-          全景工程项目库。集中呈现我们在人工智能、底层高并发系统、Web3 与 WebGL 前沿交互中的实践成果。
+          {t('projectsPage.subtitle')}
         </p>
       </motion.div>
 
@@ -68,12 +73,12 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
       >
         {/* Category Tabs */}
         <div className="flex flex-wrap gap-2 justify-center">
-          {CATEGORIES.map((cat) => {
-            const isActive = selectedCategory === cat;
+          {CATEGORY_KEYS.map((cat) => {
+            const isActive = selectedCategory === cat.id;
             return (
               <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
                 className={`relative px-4 py-2 text-xs font-mono tracking-wider rounded-full transition-all duration-300 cursor-pointer focus:outline-none ${
                   isActive
                     ? 'text-cyan-300 font-semibold'
@@ -87,7 +92,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
                     transition={{ type: 'spring', stiffness: 350, damping: 25 }}
                   />
                 )}
-                {cat}
+                {t(cat.labelKey)}
               </button>
             );
           })}
@@ -100,7 +105,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="检索项目名、技术栈..."
+            placeholder={t('projectsPage.searchPlaceholder')}
             className="w-full pl-10 pr-9 py-2 bg-zinc-950/80 border border-zinc-800 text-xs font-mono text-zinc-200 placeholder-zinc-500 rounded-full focus:outline-none focus:border-cyan-500/60 focus:shadow-[0_0_15px_rgba(34,211,238,0.15)] transition-all"
           />
           {searchQuery && (
@@ -118,7 +123,9 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         <AnimatePresence mode="popLayout">
           {filteredProjects.length > 0 ? (
-            filteredProjects.map((project, idx) => (
+            filteredProjects.map((project, idx) => {
+              const loc = getProjectLocalized(project, lang);
+              return (
               <motion.div
                 key={project.title}
                 layout
@@ -143,7 +150,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
                   <div className="relative w-full h-44 mb-6 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800/80 group-hover:border-zinc-700 transition-colors">
                     <img
                       src={project.image}
-                      alt={project.title}
+                      alt={loc.title}
                       className="w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                       referrerPolicy="no-referrer"
                     />
@@ -160,24 +167,24 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
                   {/* Project Title */}
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <h3 className="text-xl font-bold tracking-tight text-white group-hover:text-cyan-300 transition-colors">
-                      {project.title}
+                      {loc.title}
                     </h3>
                     <ArrowUpRight className="w-4 h-4 text-zinc-600 group-hover:text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0 mt-1" />
                   </div>
 
                   {/* Description */}
                   <p className="text-zinc-400 text-xs sm:text-sm font-light leading-relaxed line-clamp-3 mb-6">
-                    {project.description}
+                    {loc.description}
                   </p>
                 </div>
 
                 <div>
                   {/* Specs Mini HUD Preview */}
-                  {project.specs && project.specs.length > 0 && (
+                  {loc.specs && loc.specs.length > 0 && (
                     <div className="flex items-center gap-3 py-2.5 px-3 bg-zinc-900/40 border border-zinc-900 rounded-lg mb-4 text-[10px] font-mono">
                       <Activity className="w-3 h-3 text-cyan-400/80 shrink-0" />
-                      <span className="text-zinc-500 truncate">{project.specs[0].label}:</span>
-                      <span className="text-cyan-400 font-bold ml-auto">{project.specs[0].value}</span>
+                      <span className="text-zinc-500 truncate">{loc.specs[0].label}:</span>
+                      <span className="text-cyan-400 font-bold ml-auto">{loc.specs[0].value}</span>
                     </div>
                   )}
 
@@ -194,14 +201,15 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
                   </div>
                 </div>
               </motion.div>
-            ))
+              );
+            })
           ) : (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="col-span-full py-24 text-center border border-dashed border-zinc-900 rounded-2xl bg-zinc-950/20"
             >
-              <p className="font-mono text-sm text-zinc-500 mb-4">没有匹配到相关项目</p>
+              <p className="font-mono text-sm text-zinc-500 mb-4">{t('projectsPage.noResults')}</p>
               <button
                 onClick={() => {
                   setSelectedCategory('ALL');
@@ -209,7 +217,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
                 }}
                 className="px-4 py-1.5 text-xs font-mono text-cyan-400 border border-cyan-500/30 rounded-full hover:bg-cyan-500/10 transition-colors cursor-pointer"
               >
-                RESET FILTERS
+                {t('projectsPage.resetFilter')}
               </button>
             </motion.div>
           )}

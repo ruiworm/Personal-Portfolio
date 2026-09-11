@@ -6,7 +6,8 @@ import { BlogListPage } from './components/BlogListPage';
 import { BlogDetailPage } from './components/BlogDetailPage';
 import { ProjectsPage } from './components/ProjectsPage';
 import { ProjectDetailPage } from './components/ProjectDetailPage';
-import { projects, Project } from './data/projects';
+import { projects, Project, getProjectLocalized } from './data/projects';
+import { useLanguage } from './context/LanguageContext';
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -29,85 +30,91 @@ const ProjectCard = ({
   project: Project; 
   index: number; 
   onExplore: (id: string) => void; 
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-10%" }}
-    transition={{ duration: 0.8 }}
-    className={`relative flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-6 sm:gap-10 md:gap-14 group`}
-  >
-    {/* Fluid Image Container */}
-    <div className="relative w-full md:w-5/12 h-48 sm:h-56 md:h-60 flex items-center justify-center">
-      {/* Background Glow */}
-      <motion.div
-        className="absolute inset-0 bg-cyan-500/10 mix-blend-screen blur-2xl -z-10 rounded-full"
-        animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ duration: 4 + index, repeat: Infinity, ease: "easeInOut" }}
-      />
-      {/* Image with fluid border radius */}
-      <motion.div
-        className="relative w-44 h-44 sm:w-52 sm:h-52 md:w-56 md:h-56 overflow-hidden"
-        style={{ borderRadius: "40% 60% 70% 30% / 40% 50% 60% 50%" }}
-        animate={{
-          borderRadius: [
-            "40% 60% 70% 30% / 40% 50% 60% 50%",
-            "60% 40% 30% 70% / 60% 30% 70% 40%",
-            "40% 60% 70% 30% / 40% 50% 60% 50%"
-          ]
-        }}
-        transition={{ duration: 8 + index * 2, repeat: Infinity, ease: "linear" }}
-      >
-        <img 
-          src={project.image} 
-          alt={project.title}
-          className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 mix-blend-luminosity group-hover:mix-blend-normal"
-          referrerPolicy="no-referrer"
+}) => {
+  const { lang, t } = useLanguage();
+  const loc = getProjectLocalized(project, lang);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 0.8 }}
+      className={`relative flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-6 sm:gap-10 md:gap-14 group`}
+    >
+      {/* Fluid Image Container */}
+      <div className="relative w-full md:w-5/12 h-48 sm:h-56 md:h-60 flex items-center justify-center">
+        {/* Background Glow */}
+        <motion.div
+          className="absolute inset-0 bg-cyan-500/10 mix-blend-screen blur-2xl -z-10 rounded-full"
+          animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 4 + index, repeat: Infinity, ease: "easeInOut" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent pointer-events-none" />
-      </motion.div>
-    </div>
-    
-    {/* Text Content - Floating */}
-    <div className={`relative w-full md:w-7/12 flex flex-col ${index % 2 === 0 ? 'items-start text-left' : 'items-end text-right'} z-10`}>
-      <h3 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tighter mb-2 md:mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400">
-        {project.title}
-      </h3>
-      <p className="text-zinc-400 text-sm md:text-base font-light leading-relaxed mb-3 md:mb-4 max-w-lg line-clamp-2">
-        {project.description}
-      </p>
-      <div className={`flex flex-wrap gap-2.5 text-xs font-mono text-cyan-400/80 ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
-        {project.tags.map((tag, i) => (
-          <span key={tag} className="flex items-center gap-1.5">
-            {i > 0 && <span className="w-1 h-1 rounded-full bg-emerald-500/50" />}
-            {tag}
-          </span>
-        ))}
+        {/* Image with fluid border radius */}
+        <motion.div
+          className="relative w-44 h-44 sm:w-52 sm:h-52 md:w-56 md:h-56 overflow-hidden"
+          style={{ borderRadius: "40% 60% 70% 30% / 40% 50% 60% 50%" }}
+          animate={{
+            borderRadius: [
+              "40% 60% 70% 30% / 40% 50% 60% 50%",
+              "60% 40% 30% 70% / 60% 30% 70% 40%",
+              "40% 60% 70% 30% / 40% 50% 60% 50%"
+            ]
+          }}
+          transition={{ duration: 8 + index * 2, repeat: Infinity, ease: "linear" }}
+        >
+          <img 
+            src={project.image} 
+            alt={loc.title}
+            className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 mix-blend-luminosity group-hover:mix-blend-normal"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent pointer-events-none" />
+        </motion.div>
       </div>
       
-      {/* Abstract Link (Button acting as link) */}
-      <motion.button 
-        onClick={() => onExplore(project.id)}
-        className="mt-4 md:mt-5 flex items-center gap-3 text-white group/link cursor-pointer focus:outline-none"
-        whileHover={{ x: index % 2 === 0 ? 8 : -8 }}
-      >
-        {index % 2 !== 0 && (
-          <div className="w-6 h-[1px] bg-white/30 group-hover/link:w-12 group-hover/link:bg-white transition-all duration-500 relative">
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-          </div>
-        )}
-        <span className="font-bold tracking-widest uppercase text-xs">Explore</span>
-        {index % 2 === 0 && (
-          <div className="w-6 h-[1px] bg-white/30 group-hover/link:w-12 group-hover/link:bg-white transition-all duration-500 relative">
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-          </div>
-        )}
-      </motion.button>
-    </div>
-  </motion.div>
-);
+      {/* Text Content - Floating */}
+      <div className={`relative w-full md:w-7/12 flex flex-col ${index % 2 === 0 ? 'items-start text-left' : 'items-end text-right'} z-10`}>
+        <h3 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tighter mb-2 md:mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400">
+          {loc.title}
+        </h3>
+        <p className="text-zinc-400 text-sm md:text-base font-light leading-relaxed mb-3 md:mb-4 max-w-lg line-clamp-2">
+          {loc.description}
+        </p>
+        <div className={`flex flex-wrap gap-2.5 text-xs font-mono text-cyan-400/80 ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
+          {project.tags.map((tag, i) => (
+            <span key={tag} className="flex items-center gap-1.5">
+              {i > 0 && <span className="w-1 h-1 rounded-full bg-emerald-500/50" />}
+              {tag}
+            </span>
+          ))}
+        </div>
+        
+        {/* Abstract Link (Button acting as link) */}
+        <motion.button 
+          onClick={() => onExplore(project.id)}
+          className="mt-4 md:mt-5 flex items-center gap-3 text-white group/link cursor-pointer focus:outline-none"
+          whileHover={{ x: index % 2 === 0 ? 8 : -8 }}
+        >
+          {index % 2 !== 0 && (
+            <div className="w-6 h-[1px] bg-white/30 group-hover/link:w-12 group-hover/link:bg-white transition-all duration-500 relative">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+            </div>
+          )}
+          <span className="font-bold tracking-widest uppercase text-xs">{t('home.explore')}</span>
+          {index % 2 === 0 && (
+            <div className="w-6 h-[1px] bg-white/30 group-hover/link:w-12 group-hover/link:bg-white transition-all duration-500 relative">
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+            </div>
+          )}
+        </motion.button>
+      </div>
+    </motion.div>
+  );
+};
 
 function HeroSection() {
+  const { t } = useLanguage();
   const mouseX = useMotionValue(-1000);
   const mouseY = useMotionValue(-1000);
 
@@ -133,12 +140,12 @@ function HeroSection() {
 
   return (
     <section 
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-black cursor-crosshair border-b border-zinc-900"
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-black cursor-crosshair border-b border-zinc-900 px-4"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
       {/* 底层：极简、深邃的未探测区域 */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-0 pointer-events-none">
+      <div className="absolute inset-0 flex flex-col items-center justify-center z-0 pointer-events-none px-4 text-center">
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -152,15 +159,15 @@ function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="text-xl md:text-2xl text-zinc-700 tracking-widest"
+          className="text-lg md:text-2xl text-zinc-700 tracking-widest max-w-2xl"
         >
-          探索技术边界，构建优雅且高效的数字产品。
+          {t('hero.tagline')}
         </motion.p>
       </div>
 
       {/* 顶层：高反差遮罩层（透视光晕内的区域） */}
       <motion.div 
-        className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-cyan-400 pointer-events-none"
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-cyan-400 pointer-events-none px-4 text-center"
         style={{ clipPath }}
       >
         {/* 顶层背景：高对比度几何网格 */}
@@ -169,8 +176,8 @@ function HeroSection() {
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 text-black">
           Hi, I'm vere
         </h1>
-        <p className="text-xl md:text-2xl text-zinc-900 font-bold tracking-widest">
-          探索技术边界，构建优雅且高效的数字产品。
+        <p className="text-lg md:text-2xl text-zinc-900 font-bold tracking-widest max-w-2xl">
+          {t('hero.tagline')}
         </p>
 
         {/* 顶层硬核意象元素 */}
@@ -185,10 +192,10 @@ function HeroSection() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 1 }}
-        className="absolute bottom-12 md:bottom-20 z-20 flex flex-col items-center gap-4 group"
+        className="absolute bottom-12 md:bottom-20 z-20 flex flex-col items-center gap-4 group cursor-pointer"
       >
         <span className="text-xs font-mono tracking-[0.5em] text-zinc-600 group-hover:text-cyan-400 transition-colors duration-500 uppercase">
-          START
+          {t('hero.start')}
         </span>
         <div className="w-[1px] h-12 bg-gradient-to-b from-zinc-800 to-transparent group-hover:from-cyan-400 transition-colors duration-500" />
       </motion.a>
@@ -197,6 +204,7 @@ function HeroSection() {
 }
 
 export default function App() {
+  const { lang, t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(0);
 
   // Hash router state
@@ -273,7 +281,7 @@ export default function App() {
           className="flex flex-col items-center"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 md:mb-10 tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-800">
-            PROJECTS
+            {t('home.projectsTitle')}
           </h2>
           
           <div className="w-full relative">
@@ -348,7 +356,7 @@ export default function App() {
               {totalPages > 1 && (
                 <div className="flex flex-col items-center justify-center w-full py-4 md:py-6 gap-2.5 z-30">
                   <div className="text-zinc-500 font-mono text-[9px] tracking-[0.4em] uppercase">
-                    Phase <span className="text-cyan-400">0{currentPage + 1}</span> <span className="mx-1.5 opacity-50">/</span> 0{totalPages}
+                    {t('home.phase')} <span className="text-cyan-400">0{currentPage + 1}</span> <span className="mx-1.5 opacity-50">/</span> 0{totalPages}
                   </div>
                   
                   <div className="relative w-36 md:w-48 h-[1px] bg-zinc-800 flex items-center">
@@ -401,7 +409,7 @@ export default function App() {
                   className="group flex items-center gap-2.5 px-5 py-2 rounded-full bg-zinc-900/60 border border-zinc-800 hover:border-cyan-500/40 text-xs font-mono text-zinc-300 hover:text-cyan-300 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-[0_0_15px_rgba(34,211,238,0.15)]"
                 >
                   <Layers className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>VIEW ALL PROJECTS ({projects.length})</span>
+                  <span>{t('home.viewAll')} ({projects.length})</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
@@ -427,15 +435,15 @@ export default function App() {
             <div>
               <div className="text-[10px] font-mono tracking-widest text-cyan-400 uppercase mb-1 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                LATEST RESEARCH & WRITINGS
+                {t('home.writingsTag')}
               </div>
               <h3 className="text-lg md:text-xl font-bold text-white group-hover:text-cyan-300 transition-colors">
-                探索高并发网关、WebGL 交互与现代工程实践
+                {t('home.writingsTitle')}
               </h3>
             </div>
           </div>
           <div className="flex items-center gap-2 text-xs font-mono tracking-wider text-cyan-400 shrink-0 z-10">
-            <span>ENTER ARCHIVE</span>
+            <span>{t('home.enterArchive')}</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300" />
           </div>
         </motion.div>
@@ -451,7 +459,7 @@ export default function App() {
             transition={{ duration: 0.8 }}
             className="text-sm font-mono tracking-[0.3em] text-zinc-500 uppercase mb-16 text-center"
           >
-            About Me
+            {t('about.tag')}
           </motion.h2>
           <div className="flex flex-col md:flex-row items-center gap-12 md:gap-20">
             <motion.div
@@ -477,10 +485,10 @@ export default function App() {
               className="text-zinc-400 text-base md:text-lg leading-relaxed space-y-6 font-light"
             >
               <p>
-                Hello, I'm <span className="text-zinc-200 font-medium">vere</span>. I am a passionate developer focused on crafting elegant, high-performance web applications and digital experiences. With a deep appreciation for minimalist design and clean architecture, I strive to bridge the gap between complex engineering and intuitive user interfaces.
+                {t('about.p1')}
               </p>
               <p>
-                My journey involves exploring cutting-edge technologies, from modern frontend frameworks to scalable backend systems and AI integrations. When I'm not writing code, I'm constantly learning and evolving my craft to build the next generation of digital products.
+                {t('about.p2')}
               </p>
             </motion.div>
           </div>
@@ -490,12 +498,12 @@ export default function App() {
       {/* Social Links Section - Organic Orbs */}
       <section className="py-32 px-6 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-sm font-mono tracking-[0.3em] text-zinc-500 uppercase mb-16">Connect</h2>
+          <h2 className="text-sm font-mono tracking-[0.3em] text-zinc-500 uppercase mb-16">{t('connect.tag')}</h2>
           <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
             <SocialLink href="https://github.com/ruiworm?tab=overview&from=2026-04-01&to=2026-04-11" icon={<Github className="w-6 h-6" />} label="GitHub" index={0} />
             <SocialLink href="https://x.com/mier528hui" icon={<XIcon className="w-6 h-6" />} label="X" index={1} />
-            <SocialLink href="#" icon={<WeChatIcon className="w-6 h-6" />} label="微信公众号" index={2} />
-            <SocialLink href="mailto:hello@example.com" icon={<Mail className="w-6 h-6" />} label="邮箱" index={3} />
+            <SocialLink href="#" icon={<WeChatIcon className="w-6 h-6" />} label={t('connect.wechat')} index={2} />
+            <SocialLink href="mailto:hello@example.com" icon={<Mail className="w-6 h-6" />} label={t('connect.email')} index={3} />
           </div>
         </div>
       </section>
@@ -561,7 +569,7 @@ export default function App() {
 
       {/* Footer - Minimal */}
       <footer className="py-12 text-center text-zinc-600 text-xs font-mono tracking-widest relative z-10">
-        <p>EVOLVING SINCE {new Date().getFullYear()}</p>
+        <p>{t('footer.evolving')}</p>
       </footer>
     </div>
   );

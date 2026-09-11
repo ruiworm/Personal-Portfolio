@@ -177,10 +177,182 @@ export const projects: Project[] = [
     details: "结合 WebAssembly 与 WebNN 技术，将经过量化蒸馏的视觉定位模型完整打包进浏览器环境。无需向任何服务器上传屏幕截图，即可在用户本地完成 UI 元素自动识别、操作意图推理与自动化表单编排。",
     specs: [
       { label: "本地模型内存占用", value: "142MB" },
-      { label: "端侧单帧识别耗时", value: "85ms" },
+      { label: "端侧单帧推理耗时", value: "85ms" },
       { label: "隐私数据外发率", value: "0%" }
     ],
-    challenges: "WebAssembly 线程池在跨浏览器环境下的内存共享与量化权重张量重分配瓶颈消除。",
-    architecture: ["Canvas 屏幕捕获管线", "WASM ONNX 推理运行核", "UI 树层级拓扑重构器", "无状态动作编排状态机"]
+    challenges: "解决在不同浏览器沙箱环境中 WebAssembly 线程池内存争用与多尺寸张量反复重分配的耗时瓶颈。",
+    architecture: ["Canvas 屏幕捕获管线", "WASM ONNX 运行时推理引擎", "UI DOM 拓扑分析器", "无状态动作编排状态机"]
   }
 ];
+
+export function getProjectLocalized(project: Project, lang: 'zh' | 'en'): {
+  title: string;
+  description: string;
+  details: string;
+  specs: ProjectSpec[];
+  challenges: string;
+  architecture: string[];
+  features?: string[];
+} {
+  if (lang === 'zh') {
+    return {
+      title: project.title,
+      description: project.description,
+      details: project.details,
+      specs: project.specs,
+      challenges: project.challenges,
+      architecture: project.architecture,
+      features: project.features
+    };
+  }
+
+  const enMap: Record<string, any> = {
+    'dermascan-ai': {
+      title: 'DermaScan AI - Intelligent Skin Lesion Screening & Health Workstation',
+      description: 'An intelligent clinical skin lesion screening workstation powered by ConvNeXt / ResNet-50 multi-task deep learning and international ABCDE clinical criteria. Features millimeter-level ROI segmentation, five-dimensional morphological scoring, structured clinical reports, and an offline medical encyclopedia.',
+      details: 'DermaScan AI is designed for pre-clinical screening and personal full-lifecycle skin health management. Benchmarked on the International Skin Imaging Collaboration (ISIC) multi-center datasets, the platform incorporates ConvNeXt with Convolutional Block Attention Modules (CBAM). By quantifying asymmetry, border compactness, color variance, physical diameter, and temporal evolution, the system generates comprehensive reports with Top-3 differential diagnoses, Grad-CAM attribution heatmaps, and graded medical advice. Featuring a Local-First architecture, it provides an offline-capable demo with 5 real follow-up cases and 6 peer-reviewed medical articles.',
+      specs: [
+        { label: 'Top-1 Diagnostic Accuracy', value: '96.4%' },
+        { label: 'Inference & Report Latency', value: '< 180ms' },
+        { label: 'ABCDE Morphological Dimensions', value: '5-D Full Coverage' },
+        { label: 'Cloud & Offline Demo Fidelity', value: '100% PWA' }
+      ],
+      features: [
+        '[Multimodal Lesion Screening] Live camera capture and dermatoscope image uploads with adaptive contrast stretching and white balancing',
+        '[ABCDE Quantification] Computer vision algorithms automatically extract asymmetry axes, border fractal compactness, color variance entropy, and calibrated physical diameter',
+        '[Grad-CAM Attribution] Neural network attention heatmaps highlight suspected malignant lesion infiltration to prevent black-box ambiguity',
+        '[Full-Lifecycle Health Calendar] Includes 5 real clinical follow-up records (eczema, acne, nevus, urticaria, seborrheic dermatitis) with chronological trend tracking',
+        '[Peer-Reviewed Medical Encyclopedia] 6 comprehensive illustrated dermatology columns with category filtering and full-text search',
+        '[Dual-Mode Cloud Architecture] Seamlessly transitions between live GPU inference services and 100% client-side Local-First demo mode'
+      ],
+      challenges: 'Clinical dermatological AI faces extreme class imbalance and high morphological overlap between early-stage melanoma and benign nevi. We adopted conditional GANs (cGAN) for feature-level oversampling and weighted Focal Loss for hard boundary classification. To achieve zero-cloud-cost public demonstrations on Vercel, we engineered a Local-First mock dispatch middleware with self-healing state management.',
+      architecture: [
+        'Multimodal Image Pipeline',
+        'ConvNeXt + CBAM Attention Backbone',
+        'Grad-CAM Attribution Visualizer',
+        'ABCDE Morphological Quantification',
+        'Structured Clinical Report & Calendar',
+        'Vercel CI/CD & Offline PWA'
+      ]
+    },
+    'api-gateway': {
+      title: 'High-Concurrency LLM API Gateway',
+      description: 'A high-performance LLM API gateway in Go supporting multi-model load balancing, authentication, and non-blocking SSE streaming.',
+      details: 'Engineered in Go with production-grade concurrency. The gateway handles routing, audit logging, rate limiting, and failover across multiple foundation models with sub-2ms forwarding latency.',
+      specs: [
+        { label: 'Total Network Throughput', value: '48K QPS' },
+        { label: 'Forwarding Overhead', value: '< 1.5ms' },
+        { label: 'Circuit Breaker Latency', value: '100ms' }
+      ],
+      challenges: 'Mitigating memory bloat and goroutine leaks during high-concurrency long-lived Server-Sent Events (SSE) connections when clients abruptly terminate requests.',
+      architecture: ['Go High-Concurrency Kernel', 'Redis Sliding-Window Limiter', 'Multi-Tenant OAuth Layer', 'Dynamic Upstream Router']
+    },
+    'hologram-ui': {
+      title: 'Holographic Gesture Interaction Interface',
+      description: 'Touchless 3D spatial gesture interaction designed for glasses-free holographic displays, transcending physical screen boundaries.',
+      details: 'Combines dual infrared depth cameras with visible light tracking. Custom WebGL shaders compute real-time skeletal node vectors and physical spring damping collisions in 3D space.',
+      specs: [
+        { label: 'Tracking Spatial Deviation', value: '< 1.2mm' },
+        { label: 'Capture Sampling Rate', value: '90 FPS' },
+        { label: 'GPU Shader Overhead', value: '12%' }
+      ],
+      challenges: 'Solving occlusion blind spots caused by finger overlapping and eliminating motion-to-photon latency in spatial tracking.',
+      architecture: ['Spatial Depth Sensor Layer', 'Skeletal Smoothing Algorithm', 'Three.js Mesh Controller', 'WebGL Custom Render Pipeline']
+    },
+    'finance-tracker': {
+      title: 'Asset & Fund Performance Tracker',
+      description: 'An offline-first financial portfolio analytics application with AES-256 encryption and multi-account synchronization.',
+      details: 'Built with an Offline-First distributed multi-tier architecture and end-to-end AES-GCM-256 client-side encryption. Aggregates multi-institution NAV disclosures to deliver compound financial reports.',
+      specs: [
+        { label: 'Data Fetch Latency', value: '< 150ms' },
+        { label: 'Chart Render Framerate', value: '120 FPS' },
+        { label: 'Storage Security Level', value: 'AES-256' }
+      ],
+      challenges: 'Resolving concurrent write conflicts across distributed nodes without compromising responsive asset curve rendering.',
+      architecture: ['Flutter Canvas Pipeline', 'SQLite Local Middleware', 'Node.js Currency Converter', 'Encrypted Cloud Sync']
+    },
+    'smarthome-hub': {
+      title: 'Smart Home Central Orchestration Hub',
+      description: 'An IoT central control unit supporting offline wake-word recognition and contextual automated scene transitions.',
+      details: 'Features an ultra-lightweight offline voice keyword spotting engine. Integrates Zigbee, Z-Wave, and industrial-grade MQTT protocols with a local rule engine that operates autonomously without internet connectivity.',
+      specs: [
+        { label: 'Voice Response Time', value: '350ms' },
+        { label: 'Protocol Packet Throughput', value: '1,200 pkt/s' },
+        { label: 'Local Autonomy Rate', value: '100%' }
+      ],
+      challenges: 'Maintaining 100% deterministic rule triggers in complex radio interference environments during network outages.',
+      architecture: ['Edge Wake-Word Engine', 'MQTT Broadcast Broker', 'Vue Contextual Dashboard', 'Local Event Loop Daemon']
+    },
+    'decentralized-network': {
+      title: 'Decentralized Creator Network',
+      description: 'A blockchain-based creator monetization platform ensuring transparent content ownership and automated royalty splits.',
+      details: 'Core smart contracts written in Solidity and verified via formal verification on low-fee Ethereum Layer-2 rollups. Integrates multi-signature treasuries and decentralized IPFS storage to protect digital intellectual property.',
+      specs: [
+        { label: 'Client Gas Overhead', value: 'Ultra-Low' },
+        { label: 'Peak Daily Transactions', value: '450K txn' },
+        { label: 'Ownership Finality', value: '< 14s' }
+      ],
+      challenges: 'Balancing heavy multimedia metadata with on-chain gas constraints via content-addressed IPFS storage and minimal hash attestations.',
+      architecture: ['Solidity Smart Contracts', 'IPFS Storage Protocol', 'Multi-Sig Auth Middleware', 'React + viem Web3 Client']
+    },
+    'webgpu-fluid': {
+      title: 'WebGPU Neural Fluid Particle Simulator',
+      description: 'Real-time 150,000+ fluid particle physics simulation powered by WGSL compute shaders and screen-space surface reconstruction.',
+      details: 'Bypasses CPU compute bottlenecks with modern WebGPU compute pipelines. Parallelly solves Navier-Stokes hydrodynamic partial differential equations directly in GPU VRAM to maintain 120 FPS.',
+      specs: [
+        { label: 'Active Physical Particles', value: '150,000+' },
+        { label: 'Render Framerate', value: '120 FPS' },
+        { label: 'GPU Dispatch Overhead', value: '< 3.2ms' }
+      ],
+      challenges: 'Implementing parallel spatial hash grid sorting and memory coalescing under strict GPU memory bandwidth constraints.',
+      architecture: ['WebGPU Device Context', 'WGSL Spatial Hash Sorter', 'SPH Pressure-Velocity Kernel', 'Screen-Space Gaussian Blur']
+    },
+    'rust-vector-engine': {
+      title: 'Rust Hybrid Vector Search & RAG Core',
+      description: 'A lightweight embedded vector search library tailored for high-precision RAG, blending dense vectors with sparse BM25 ranking.',
+      details: 'Written in pure Rust with optimized Hierarchical Navigable Small World (HNSW) graph indexing. Features AVX-512 and ARM Neon SIMD dot-product acceleration with 38% less memory than comparable C++ engines.',
+      specs: [
+        { label: '10M Vector Search Latency', value: '< 2.8ms' },
+        { label: 'Recall@10 Accuracy', value: '98.7%' },
+        { label: 'Binary Footprint', value: '14MB' }
+      ],
+      challenges: 'Preserving HNSW graph connectivity and high recall during lock-free concurrent read/write operations.',
+      architecture: ['SIMD Vector Distance Core', 'HNSW Layered Graph Store', 'BM25 Inverted Index Merger', 'gRPC / C-ABI Bindings']
+    },
+    'vision-agent': {
+      title: 'Lightweight Client-Side Vision Agent Workspace',
+      description: 'A desktop automation and multi-task agent console executing lightweight ONNX vision inference directly in the browser.',
+      details: 'Combines WebAssembly with WebNN to run quantized vision grounding models in-browser. Recognizes UI elements and orchestrates form actions locally without transmitting user screen captures to external servers.',
+      specs: [
+        { label: 'Local Model RAM Footprint', value: '142MB' },
+        { label: 'Client Single-Frame Latency', value: '85ms' },
+        { label: 'Privacy Data Egress Rate', value: '0%' }
+      ],
+      challenges: 'Eliminating WebAssembly thread pool memory contention and tensor reallocation bottlenecks across diverse browser runtimes.',
+      architecture: ['Canvas Screen Capture Pipe', 'WASM ONNX Inference Engine', 'UI DOM Topology Parser', 'Stateless Action State Machine']
+    }
+  };
+
+  const localized = enMap[project.id];
+  if (!localized) {
+    return {
+      title: project.title,
+      description: project.description,
+      details: project.details,
+      specs: project.specs,
+      challenges: project.challenges,
+      architecture: project.architecture,
+      features: project.features
+    };
+  }
+
+  return {
+    title: localized.title || project.title,
+    description: localized.description || project.description,
+    details: localized.details || project.details,
+    specs: localized.specs || project.specs,
+    challenges: localized.challenges || project.challenges,
+    architecture: localized.architecture || project.architecture,
+    features: localized.features || project.features
+  };
+}

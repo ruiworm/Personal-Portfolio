@@ -15,6 +15,7 @@ import {
   Info
 } from 'lucide-react';
 import { BLOG_POSTS, BlogPost } from '../data/blogs';
+import { useLanguage } from '../context/LanguageContext';
 
 interface BlogDetailPageProps {
   slug: string;
@@ -23,6 +24,7 @@ interface BlogDetailPageProps {
 }
 
 export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({ slug, onBack, onSelectPost }) => {
+  const { lang, t } = useLanguage();
   const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -81,7 +83,7 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({ slug, onBack, on
         className="group flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-cyan-400 transition-colors mb-12 cursor-pointer focus:outline-none"
       >
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300" />
-        <span>BACK TO WRITINGS</span>
+        <span>{t('blogDetail.back')}</span>
       </motion.button>
 
       {/* Article Header */}
@@ -131,12 +133,12 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({ slug, onBack, on
             {copiedLink ? (
               <>
                 <Check className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-400">COPIED</span>
+                <span className="text-emerald-400">{t('blogDetail.copied')}</span>
               </>
             ) : (
               <>
                 <Share2 className="w-3.5 h-3.5" />
-                <span>SHARE</span>
+                <span>{t('blogDetail.share')}</span>
               </>
             )}
           </button>
@@ -231,7 +233,7 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({ slug, onBack, on
                     {copiedCodeId === `code-${sIdx}` ? (
                       <>
                         <Check className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-[10px] text-emerald-400">COPIED</span>
+                        <span className="text-[10px] text-emerald-400">{t('blogDetail.codeCopied')}</span>
                       </>
                     ) : (
                       <>
@@ -273,7 +275,7 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({ slug, onBack, on
           >
             <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-500 mb-2">
               <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-              <span>PREVIOUS ARTICLE</span>
+              <span>{t('blogDetail.prev')}</span>
             </div>
             <div className="text-sm font-semibold text-zinc-200 group-hover:text-cyan-300 transition-colors line-clamp-1">
               {prevPost.title}
@@ -287,7 +289,7 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({ slug, onBack, on
             className="p-5 rounded-xl border border-zinc-900 bg-zinc-950/40 hover:border-cyan-500/40 transition-all text-right group cursor-pointer"
           >
             <div className="flex items-center justify-end gap-2 text-[10px] font-mono text-zinc-500 mb-2">
-              <span>NEXT ARTICLE</span>
+              <span>{t('blogDetail.next')}</span>
               <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </div>
             <div className="text-sm font-semibold text-zinc-200 group-hover:text-cyan-300 transition-colors line-clamp-1">
