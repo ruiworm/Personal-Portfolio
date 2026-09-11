@@ -24,7 +24,7 @@ export const projects: Project[] = [
     id: "dermascan-ai",
     title: "肤理通 (DermaScan AI) - 智能皮肤病变影像初筛与全周期健康管理平台",
     description: "基于 ConvNeXt / ResNet 深度多任务学习与国际 ABCDE 临床量化准则的智能化皮肤影像初筛工作站。支持 32 种病变毫米级特征提取、五维形态学评估、结构化处方级报告生成与离线医学百科全库。",
-    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1200&q=80",
+    image: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80",
     tags: ["React 19", "TypeScript", "PyTorch", "Medical AI", "Computer Vision", "Tailwind CSS", "Vercel"],
     category: "AI / ML",
     link: "https://dermascan-ai-three.vercel.app/",
