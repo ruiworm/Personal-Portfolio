@@ -10,30 +10,42 @@ export interface Project {
   image: string;
   tags: string[];
   link: string;
+  github?: string;
   category?: 'AI / ML' | 'SYSTEMS & CLOUD' | 'GRAPHICS & WEBGL' | 'FULLSTACK & APP';
   details: string;
   specs: ProjectSpec[];
   challenges: string;
   architecture: string[];
+  features?: string[];
 }
 
 export const projects: Project[] = [
   {
-    id: "skin-analysis",
-    title: "皮肤图像辅助分析系统",
-    description: "基于深度学习的皮肤病变图像辅助诊断工具，提供高精度的分类与特征提取功能。",
-    image: "https://picsum.photos/seed/skin-analysis/800/600?blur=2",
-    tags: ["Python", "PyTorch", "React", "AI"],
+    id: "dermascan-ai",
+    title: "肤理通 (DermaScan AI) - 智能皮肤病变影像初筛与全周期健康管理平台",
+    description: "基于 ConvNeXt / ResNet 深度多任务学习与国际 ABCDE 临床量化准则的智能化皮肤影像初筛工作站。支持 32 种病变毫米级特征提取、五维形态学评估、结构化处方级报告生成与离线医学百科全库。",
+    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1200&q=80",
+    tags: ["React 19", "TypeScript", "PyTorch", "Medical AI", "Computer Vision", "Tailwind CSS", "Vercel"],
     category: "AI / ML",
-    link: "#",
-    details: "采用 ResNet-50 / ConvNeXt 基础骨干网，融合空间与通道注意力机制（CBAM），在 12 万张受标准临床标注病损样本上进行多任务联合训练，可实现 32 种常见及罕见皮肤表征的主动精确检出与多标签病灶勾画定位。",
+    link: "https://dermascan-ai-three.vercel.app/",
+    github: "https://github.com/ruiworm/dermascan-ai",
+    details: "肤理通（DermaScan AI）定位于临床前期辅助初筛与家庭全周期皮肤健康管理。系统以国际皮肤镜协作网（ISIC）多中心临床标注数据集为基准，采用融合空间与通道双重注意力机制（CBAM）的 ConvNeXt 深度卷积神经网络，在大规模临床切片上进行迁移微调。核心结合皮肤科恶性黑色素瘤诊断黄金法则（ABCDE 准则），从不对称性、边缘粗糙度、多色相离散、直径物理换算与演变趋势 5 个维度对病灶进行精确量化，提供包含 Top-3 鉴别诊断置信度、Grad-CAM 视觉注意力热力图归因与分级医嘱的专业初筛报告。同时创新研发 Local-First 本地优先架构，内置 5 份真实随访病历与 6 篇医学审校专栏，实现零后端依赖的高保真独立演示。",
     specs: [
-      { label: "平均推断延迟", value: "< 120ms" },
-      { label: "Top-1 检出准确率", value: "96.4%" },
-      { label: "模型本地体积", value: "84MB" }
+      { label: "多类病灶 Top-1 识别准确率", value: "96.4%" },
+      { label: "端侧推理与报告生成延迟", value: "< 180ms" },
+      { label: "ABCDE 临床形态量化维度", value: "5 维全覆盖" },
+      { label: "云端与离线演示保真度", value: "100% PWA" }
     ],
-    challenges: "由于罕见表征极度稀缺造成整体分类高度不平衡，系统深度集成了 conditional Generative Adversarial Networks (cGAN) 对小样本做特征级伪数据采样合成，再通过解离自适应增强解决多源照度偏移的适配难点。",
-    architecture: ["前端图像流捕捉", "云端边缘推断节点", "ConvNeXt 骨干推演内核", "临床辅助可视化面板"]
+    features: [
+      "【多模态影像初筛】支持高清相机拍摄与本地皮肤镜切片导入，内置实时对比度拉伸与白平衡校正算法",
+      "【ABCDE 临床准则量化】计算机视觉自动提取不对称轴度、边缘分形维数、色斑信息熵与物理标定直径",
+      "【Grad-CAM 决策可解释性】生成注意力热力图，精准标定恶性细胞浸润异型区域，避免“黑盒”误导",
+      "【全生命周期健康日历】预设湿疹、痤疮、色素痣、荨麻疹与脂溢性皮炎等 5 份真实病案，以时间轴对比病损演变",
+      "【权威专科医学百科】内置经专科审校的 6 大医学图文专栏，支持分类胶囊切换、全文检索与 Markdown 权威排版",
+      "【双模无缝云端架构】兼顾生产级微服务推断后端与基于 Local-First 的纯前端零故障高保真演示模式"
+    ],
+    challenges: "医学辅助诊断的核心痛点在于早期恶性病损与良性色素痣表征极度重合，且罕见恶性病例样本天然稀缺。工程上引入条件生成对抗网络（cGAN）实现特征级过采样平衡，并设计加权 Focal Loss 提升边缘难例辨识度；针对生产环境无昂贵专属 GPU 服务器提供云端体验的瓶颈，设计了全链路 Mock 调度中间件与响应标准包装层，保证在 Vercel 静态托管下仍能流畅体验真实上传、检测分析与百科管理。",
+    architecture: ["多模态影像采集与自适应增强", "ConvNeXt + CBAM 混合注意力推断", "Grad-CAM 决策可解释性热力图", "ABCDE 临床形态学算法量化", "结构化医疗报告与健康日历", "Vercel 持续交付与离线 PWA"]
   },
   {
     id: "api-gateway",

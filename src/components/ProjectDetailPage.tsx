@@ -10,7 +10,9 @@ import {
   ExternalLink,
   Layers,
   Terminal,
-  Cpu
+  Cpu,
+  Github,
+  CheckCircle2
 } from 'lucide-react';
 import { projects, Project } from '../data/projects';
 
@@ -28,7 +30,9 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
   const [copiedLink, setCopiedLink] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  const projectIndex = projects.findIndex((p) => p.id === projectId || p.title === projectId);
+  const projectIndex = projects.findIndex(
+    (p) => p.id === projectId || (projectId === 'skin-analysis' && p.id === 'dermascan-ai') || p.title === projectId
+  );
   const project = projects[projectIndex] || projects[0];
 
   const prevProject = projectIndex > 0 ? projects[projectIndex - 1] : null;
@@ -248,12 +252,33 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
           </section>
         )}
 
-        {/* Section 04: Core Challenges */}
+        {/* Section: Key Capabilities & Functional Modules */}
+        {project.features && project.features.length > 0 && (
+          <section className="space-y-4">
+            <h3 className="text-xs font-mono tracking-[0.3em] text-cyan-400 uppercase flex items-center gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>04 // KEY CAPABILITIES & FEATURES</span>
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              {project.features.map((feat, i) => (
+                <div
+                  key={i}
+                  className="flex items-start gap-3 p-4 rounded-xl bg-zinc-950/60 border border-zinc-900/90 text-zinc-300 text-sm leading-relaxed"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 shrink-0 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                  <span>{feat}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Section 05: Core Challenges */}
         {project.challenges && (
           <section className="space-y-4">
             <h3 className="text-xs font-mono tracking-[0.3em] text-cyan-400 uppercase flex items-center gap-2">
               <Layers className="w-3.5 h-3.5" />
-              <span>04 // CORE CHALLENGES OVERCOME</span>
+              <span>05 // CORE CHALLENGES OVERCOME</span>
             </h3>
             <p className="text-zinc-300 font-light text-base sm:text-lg leading-relaxed bg-zinc-950/40 p-6 rounded-2xl border border-zinc-900">
               {project.challenges}
@@ -261,20 +286,31 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
           </section>
         )}
 
-        {/* External Link if exists */}
-        {project.link && project.link !== '#' && (
-          <div className="pt-6">
+        {/* Deployment & Repository Access Links */}
+        <div className="pt-8 flex flex-wrap items-center gap-4">
+          {project.link && project.link !== '#' && (
             <a
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-cyan-500/10 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/20 font-mono text-xs tracking-wider transition-all"
+              className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-emerald-500/15 border border-emerald-500/50 text-emerald-300 hover:bg-emerald-500/25 hover:border-emerald-400 font-mono text-xs tracking-wider transition-all shadow-[0_0_20px_rgba(16,185,129,0.15)] group/btn"
             >
-              <span>ACCESS REPOSITORY / LIVE DEMO</span>
-              <ExternalLink className="w-4 h-4" />
+              <span className="font-bold">体验在线演示 (LIVE DEMO)</span>
+              <ExternalLink className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
             </a>
-          </div>
-        )}
+          )}
+          {project.github && (
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-zinc-900/90 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-600 font-mono text-xs tracking-wider transition-all group/btn"
+            >
+              <Github className="w-4 h-4" />
+              <span className="font-bold">开源代码仓库 (GITHUB REPO)</span>
+            </a>
+          )}
+        </div>
       </motion.article>
 
       {/* Prev / Next Project Navigation */}
