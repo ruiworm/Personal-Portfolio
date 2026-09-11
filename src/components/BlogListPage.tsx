@@ -8,7 +8,7 @@ interface BlogListPageProps {
   onSelectPost: (slug: string) => void;
 }
 
-const CATEGORIES = ['ALL', 'AI & SYSTEMS', 'GRAPHICS & WEBGL', 'ENGINEERING'] as const;
+const CATEGORIES = ['ALL', 'QUANT & TRADING', 'AI & SYSTEMS', 'GRAPHICS & WEBGL', 'ENGINEERING'] as const;
 
 export const BlogListPage: React.FC<BlogListPageProps> = ({ onSelectPost }) => {
   const { lang, t } = useLanguage();

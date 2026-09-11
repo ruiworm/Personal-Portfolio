@@ -12,10 +12,12 @@ import {
   ChevronRight,
   AlertCircle,
   Lightbulb,
-  Info
+  Info,
+  Layers
 } from 'lucide-react';
 import { BLOG_POSTS, BlogPost } from '../data/blogs';
 import { useLanguage } from '../context/LanguageContext';
+import { TradingCanvasViewer } from './TradingCanvasViewer';
 
 interface BlogDetailPageProps {
   slug: string;
@@ -157,9 +159,49 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({ slug, onBack, on
           {post.content.lead}
         </p>
 
+        {/* Embedded Interactive Mindmap Canvas (Option 2) */}
+        {post.hasInteractiveCanvas && (
+          <div className="my-10 space-y-3">
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+                <Layers className="w-3.5 h-3.5" />
+                <span className="font-bold tracking-wider">
+                  {lang === 'en' ? 'OBSIDIAN INFINITE MINDMAP CANVAS' : '交互式思维白板 // 滚轮缩放 · 拖拽探查 · 点击卡片检视'}
+                </span>
+              </div>
+              <span className="text-[11px] font-mono text-zinc-500 hidden sm:inline">
+                {lang === 'en' ? 'Click on any card to view execution checklist' : '点击任意卡片查看实盘执行清单'}
+              </span>
+            </div>
+            <TradingCanvasViewer 
+              onJumpToSection={(secId) => {
+                const el = document.getElementById(secId);
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }} 
+            />
+          </div>
+        )}
+
         {/* Sections */}
-        {post.content.sections.map((section, sIdx) => (
-          <section key={sIdx} className="space-y-6">
+        {post.content.sections.map((section, sIdx) => {
+          const sectionId = post.hasInteractiveCanvas
+            ? sIdx === 0
+              ? 'sec-po3'
+              : sIdx === 1
+              ? 'sec-orderflow'
+              : sIdx === 2
+              ? 'sec-smt'
+              : sIdx === 3
+              ? 'sec-vacuum'
+              : sIdx === 4
+              ? 'sec-scalp'
+              : undefined
+            : undefined;
+
+          return (
+          <section key={sIdx} id={sectionId} className="space-y-6 scroll-mt-28">
             {section.heading && (
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white pt-6 flex items-center gap-3">
                 <span>{section.heading}</span>
@@ -251,7 +293,8 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({ slug, onBack, on
               </div>
             )}
           </section>
-        ))}
+          );
+        })}
       </motion.main>
 
       {/* Bottom Tags */}

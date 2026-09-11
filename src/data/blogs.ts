@@ -5,8 +5,9 @@ export interface BlogPost {
   excerpt: string;
   date: string;
   readTime: string;
-  category: 'AI & SYSTEMS' | 'GRAPHICS & WEBGL' | 'ENGINEERING';
+  category: 'AI & SYSTEMS' | 'GRAPHICS & WEBGL' | 'ENGINEERING' | 'QUANT & TRADING';
   tags: string[];
+  hasInteractiveCanvas?: boolean;
   content: {
     lead: string;
     sections: {
@@ -27,6 +28,100 @@ export interface BlogPost {
 }
 
 export const BLOG_POSTS: BlogPost[] = [
+  {
+    id: 'post-trading-canvas',
+    slug: 'trading-orderflow-po3-mindmap-canvas',
+    title: '全景交易体系与订单流复盘思维画布：从 ICT/PO3 做市商模型、SMT 背离到盘口流动性吸收',
+    excerpt: '独家内置交互式思维白板：解构真实金融交易中的机构算法逻辑。从 PO3（积累-诱导-派发）时空结构、韩师兄订单流足迹图微观失衡，到 CVD 背离与 5min 3k 极速入场系统的实盘全景复盘。',
+    date: '2026-09-11',
+    readTime: '15 MIN READ · 交互画布',
+    category: 'QUANT & TRADING',
+    hasInteractiveCanvas: true,
+    tags: ['Order Flow', 'PO3 / AMD', 'Price Action', 'CVD Divergence', 'Volume Profile', 'Trading System', 'Obsidian Canvas'],
+    content: {
+      lead: '任何成熟交易体系的终局，都是在混乱无序的盘面噪波中建立确定性的概率边界。在金融衍生品日内波段与剥头皮实盘中，依靠传统单一指标滞后交叉往往沦为主力机构的流动性燃料。本文将我多年沉淀的交易架构通过「交互式思维白板」完整复盘：上方画板支持滚轮缩放与拖拽探查，涵盖 ICT/PO3 做市商算法、韩师兄订单流（Order Flow）盘口失衡、SMT 跨品种背离与真空 Model 成交量分布四大维度的精准共振。',
+      sections: [
+        {
+          heading: '01 // 机构算法骨架：ICT / PO3 做市商操盘模型 (AMD)',
+          subheading: '市场不是随机漫步，而是精准的流动性猎杀机制',
+          paragraphs: [
+            '散户眼中的突破往往是机构眼中的“陷阱”。在真实撮合市场中，大资金由于体量巨大，无法在任意价位完成进场，他们必须通过操纵价格制造假象，诱导散户在阻力位上方追多或在支撑位下方割肉，以此汲取充足的流动性对手盘。',
+            'PO3 (Power of 3) 模型，即著名的 AMD 循环：'
+          ],
+          list: [
+            'Accumulation（亚洲盘积累期）: 市场在狭窄区间内窄幅横盘，蓄积上下边界的止损挂单池（Buy-side / Sell-side Liquidity Pools）；',
+            'Manipulation（伦敦盘诱导期 / Judas Swing）: 欧洲开盘前后，主力发起快速凶狠的虚假突破，跌破昨低或突破昨高，专门扫除散户止损；',
+            'Distribution（纽约盘派发期）: 猎杀流动性完毕后，主力真金白银反手大单推动，走完全天最流畅、最单边的主升/主跌浪潮。'
+          ],
+          callout: {
+            type: 'tip',
+            text: '黄金实战铁律：永远不要在亚洲盘高低点未被扫荡（Sweep）前盲目建立单边重仓。等待虚假破位后的快速阳包阴收回，往往是全天确定性最高的入场点。'
+          }
+        },
+        {
+          heading: '02 // 微观透视：韩师兄订单流（Order Flow）与 CVD 量化背离',
+          subheading: '穿透蜡烛图表象，直视主动买卖盘与大单吸收 (Absorption)',
+          paragraphs: [
+            '普通 K 线只记录了某时间窗口的开高低收，却将最重要的微观成交过程折叠为黑盒。订单流（Footprint 足迹图）则在每个 Price Level 上细分出 Bid（被动买限价单）与 Ask（主动市价买单）的精确撮合数量。',
+            '当盘面在关键技术位（如 PO3 假突破低点）出现价格不再创新低，但足迹图上却爆出数千手主动市价卖单（Aggressive Sellers）时，说明存在体量恐怖的机构被动限价买单（Passive Buyers）在此死死吸纳全部抛盘。这就是经典的「吸收盘 (Absorption)」，随后的轧空行情势如破竹。'
+          ],
+          code: {
+            language: 'typescript',
+            code: `// 订单流主动买卖失衡与 CVD 实时累积差值计算模型
+export interface OrderFlowTick {
+  price: number;
+  bidVol: number;
+  askVol: number;
+  delta: number; // askVol - bidVol
+}
+
+export function detectImbalance(current: OrderFlowTick, diagonalBelow: OrderFlowTick, threshold = 3.0): boolean {
+  // 对角线失衡法则：当前价位的 Ask 买量相比下方价位的 Bid 卖量超过 300%
+  if (diagonalBelow.bidVol === 0) return current.askVol > 100;
+  const ratio = current.askVol / diagonalBelow.bidVol;
+  return ratio >= threshold && current.askVol >= 50;
+}`
+          },
+          callout: {
+            type: 'warning',
+            text: '警惕成交量陷阱：价格打出新高但 CVD 呈平缓走势甚至向下倾斜时，说明当前上涨完全由散户追高或空头止损推动，缺乏实质性大买单，通常预示着闪崩拐点即将来临。'
+          }
+        },
+        {
+          heading: '03 // 跨品种雷达：SMT 跨品种智能资金背离 (Smart Money Tool)',
+          subheading: '利用资产相关性，捕捉主力资金暗度陈仓的蛛丝马迹',
+          paragraphs: [
+            '在数字资产（BTC vs ETH）或美股指期货（NQ 纳指 vs ES 标普）等具有极强宏观相关性的资产池中，主力机构往往无法同时同步买卖两只标的。',
+            '当 BTC 强势创出日内新高，而 ETH 却软弱无力无法逾越前高时，SMT 空头背离正式成立！这种背离揭露了主力资金仅仅拉升领头羊掩护弱势标的抢先出货的真实意图。两者的背离时刻，往往对应全天最高点。'
+          ],
+          list: [
+            '看涨 SMT: 标的 A 创出新低，但标的 B 拒绝创新低并形成更高低点（确认见底企稳）；',
+            '看跌 SMT: 标的 A 创出新高，但标的 B 无法破位新高（确认顶部假突破，主力离场）。'
+          ]
+        },
+        {
+          heading: '04 // 空间维度：真空 Model 与成交量分布 (Volume Profile)',
+          subheading: '像水流一样顺着阻力最小的方向流动',
+          paragraphs: [
+            '成交量分布（Volume Profile）揭示了价值中枢（POC - Point of Control）与筹码真空区（LVN - Low Volume Nodes）。',
+            '市场价格行为具有极强的物理特性：在筹码密集区（HVN），各方利益博弈充分，价格倾向于震荡收敛；而在真空区（LVN），由于历史挂单极薄，一旦价格受到催化进入该区间，便会以极快速度单边“滑移穿透”，直达下一个价值中枢。'
+          ]
+        },
+        {
+          heading: '05 // 实战执行系统：5min 剥头皮与 3k 回调点位过滤律',
+          subheading: '拒绝主观预测，以机械化规则执行高盈亏比入场',
+          paragraphs: [
+            '在建立完宏观 Bias、PO3 阶段与订单流确认后，具体的狙击入场落在 5 分钟级别图表上。我们遵循严格的「3K 回调过滤律」：'
+          ],
+          list: [
+            '第一步：结构破坏（BOS / MSS），出现 1 根坚决大实体 K 线突破关键水平位；',
+            '第二步：耐住追高冲动，等待价格回踩测试破位点或 FVG 失衡缺口，回踩 K 线严格限制在 3 根以内（时间过长代表动能丧失）；',
+            '第三步：回踩触达关键点位且订单流出现被动吸收信号瞬间入场，止损直接锁定在假突破低点外 1-2 Tick，盈亏比保底 1:3 以上。'
+          ]
+        }
+      ]
+    }
+  },
   {
     id: 'post-dermascan',
     slug: 'dermascan-ai-multimodal-skin-lesion-architecture',
